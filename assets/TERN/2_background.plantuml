@@ -1,0 +1,32 @@
+@startuml
+
+title Async/background browser tasks
+
+participant "UA" as ua
+participant "DSP" as dsp
+participant "ARAPI" as arapi
+
+== DOWNLOAD AD WEB BUNDLES ==
+
+ua -> dsp : GET <ad1-cbor-url>
+dsp -> ua : <ad bundle content>
+...
+ua -> dsp : GET <ad2-cbor-url>
+dsp -> ua : <ad bundle content>
+...
+
+opt win-time download - indistinguishable from background requests
+ ua -> dsp : GET <ad3-cbor-url>
+ dsp -> ua : <ad bundle content>
+end
+
+== FETCH ADS REQUEST ==
+
+ua -> dsp : POST /.well-known/fetch-ads {\n        "advertiser": "advertiser1.example,\n        "groups": {"group1": .., ..}\n    }
+dsp --> ua : <updated writeAdvertisementData() input>
+
+== REPORTING ==
+
+ua -> arapi : <aggregated report data>
+
+@enduml
